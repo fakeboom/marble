@@ -1,22 +1,3 @@
-/*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
-
 package main
 
 import (
@@ -92,8 +73,15 @@ func read(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 // ============================================================================================================================
 func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	type Everything struct {
-		Owners  []Owner  `json:"owners"`
-		Marbles []Marble `json:"marbles"`
+		Owners  		[]Owner  		`json:"owners"`
+		Marbles 		[]Marble 		`json:"marbles"`
+		Experts			[]Expert 		`json:"experts"`
+		Institutions 	[]Institution	`json:"institutions"`
+		Citys			[]Citys			`json:"citys"`
+		Demands			[]Demand		`json:"demands"`
+		Schemes			[]Scheme		`json:"schemes"`
+		Patents			[]Patent		`json:"patents"`
+		Papers			[]Papers		`json:"papers"`
 	}
 	var everything Everything
 
@@ -142,6 +130,154 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	}
 	fmt.Println("owner array - ", everything.Owners)
 
+
+	//Experts
+	resultsIterator, err := stub.GetStateByRange("e0", "e9999999999999999999")
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	for resultsIterator.HasNext() {
+		aKeyValue, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		queryKeyAsStr := aKeyValue.Key
+		queryValAsBytes := aKeyValue.Value
+		fmt.Println("on expert id - ", queryKeyAsStr)
+		var marble Expert
+		json.Unmarshal(queryValAsBytes, &marble)                //un stringify it aka JSON.parse()
+		everything.Experts = append(everything.Experts, marble) //add this marble to the list
+	}
+	fmt.Println("expert array - ", everything.Experts)
+
+	//Citys
+	resultsIterator, err := stub.GetStateByRange("c0", "c9999999999999999999")
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	for resultsIterator.HasNext() {
+		aKeyValue, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		queryKeyAsStr := aKeyValue.Key
+		queryValAsBytes := aKeyValue.Value
+		fmt.Println("on city id - ", queryKeyAsStr)
+		var marble City
+		json.Unmarshal(queryValAsBytes, &marble)                //un stringify it aka JSON.parse()
+		everything.Citys = append(everything.Citys, marble) //add this marble to the list
+	}
+	fmt.Println("city array - ", everything.Citys)
+
+	//Institutions
+	resultsIterator, err := stub.GetStateByRange("i0", "i9999999999999999999")
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	for resultsIterator.HasNext() {
+		aKeyValue, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		queryKeyAsStr := aKeyValue.Key
+		queryValAsBytes := aKeyValue.Value
+		fmt.Println("on institution id - ", queryKeyAsStr)
+		var marble Institution
+		json.Unmarshal(queryValAsBytes, &marble)                //un stringify it aka JSON.parse()
+		everything.Institutions = append(everything.Institutions, marble) //add this marble to the list
+	}
+	fmt.Println("Institutions array - ", everything.Institutions)
+
+		//demand
+	resultsIterator, err := stub.GetStateByRange("d0", "d9999999999999999999")
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	for resultsIterator.HasNext() {
+		aKeyValue, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		queryKeyAsStr := aKeyValue.Key
+		queryValAsBytes := aKeyValue.Value
+		fmt.Println("on demand id - ", queryKeyAsStr)
+		var marble Demand
+		json.Unmarshal(queryValAsBytes, &marble)                //un stringify it aka JSON.parse()
+		everything.Demands = append(everything.Demands, marble) //add this marble to the list
+	}
+	fmt.Println("demand array - ", everything.Demands)
+
+		//scheme
+	resultsIterator, err := stub.GetStateByRange("s0", "s9999999999999999999")
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	for resultsIterator.HasNext() {
+		aKeyValue, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		queryKeyAsStr := aKeyValue.Key
+		queryValAsBytes := aKeyValue.Value
+		fmt.Println("on Scheme id - ", queryKeyAsStr)
+		var marble Scheme
+		json.Unmarshal(queryValAsBytes, &marble)                //un stringify it aka JSON.parse()
+		everything.Schemes = append(everything.Schemes, marble) //add this marble to the list
+	}
+	fmt.Println("Scheme array - ", everything.Schemes)
+
+	//Patent
+	resultsIterator, err := stub.GetStateByRange("P0", "P9999999999999999999")
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	for resultsIterator.HasNext() {
+		aKeyValue, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		queryKeyAsStr := aKeyValue.Key
+		queryValAsBytes := aKeyValue.Value
+		fmt.Println("on Patent id - ", queryKeyAsStr)
+		var marble Patent
+		json.Unmarshal(queryValAsBytes, &marble)                //un stringify it aka JSON.parse()
+		everything.Patents = append(everything.Patents, marble) //add this marble to the list
+	}
+	fmt.Println("Patent array - ", everything.Patents)
+
+		//Paper
+	resultsIterator, err := stub.GetStateByRange("p0", "p9999999999999999999")
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	for resultsIterator.HasNext() {
+		aKeyValue, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		queryKeyAsStr := aKeyValue.Key
+		queryValAsBytes := aKeyValue.Value
+		fmt.Println("on Paper id - ", queryKeyAsStr)
+		var marble Paper
+		json.Unmarshal(queryValAsBytes, &marble)                //un stringify it aka JSON.parse()
+		everything.Papers = append(everything.Papers, marble) //add this marble to the list
+	}
+	fmt.Println("Paper array - ", everything.Papers)
+
 	//change to array of bytes
 	everythingAsBytes, _ := json.Marshal(everything) //convert to array of bytes
 	return shim.Success(everythingAsBytes)
@@ -157,13 +293,18 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 //  id
 //  "m01490985296352SjAyM"
 // ============================================================================================================================
+
 func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	type Oship struct{
+		Id  string 	`json:"id"`
+		OwnerId string `json:"ownerid"`
+	}
 	type AuditHistory struct {
 		TxId  string `json:"txId"`
-		Value Marble `json:"value"`
+		Value Oship `json:"value"`
 	}
 	var history []AuditHistory
-	var marble Marble
+	var marble Oship
 
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")

@@ -10,7 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-
+	"reflect"
 	"fmt"
 
 	"github.com/gorilla/mux"
@@ -31,6 +31,32 @@ func getOwner(w http.ResponseWriter, r *http.Request) {
 func getMarble(w http.ResponseWriter, r *http.Request) {
 	var marble api.Marble
 	getEntity(w, r, &marble)
+}
+
+func getExpert(w http.ResponseWriter, r *http.Request) {
+	var expert api.Export
+	getEntity(w, r, &expert)
+}
+func getInstitution(w http.ResponseWriter, r *http.Request) {
+	var institution api.Institution
+	getEntity(w, r, &institution)
+}
+func getCity(w http.ResponseWriter, r *http.Request) {
+	var city api.City
+	getEntity(w, r, &city)
+}
+func getDemand(w http.ResponseWriter, r *http.Request) {
+	var demand api.Demand
+	getEntity(w, r, &demand)
+}func getScheme(w http.ResponseWriter, r *http.Request) {
+	var scheme api.Scheme
+	getEntity(w, r, &scheme)
+}func getPatent(w http.ResponseWriter, r *http.Request) {
+	var patent api.Patent
+	getEntity(w, r, &patent)
+}func getPaper(w http.ResponseWriter, r *http.Request) {
+	var paper api.Paper
+	getEntity(w, r, &paper)
 }
 
 // createOwner creates a new owner
@@ -55,6 +81,7 @@ func createOwner(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSONResponse(w, http.StatusOK, response)
 }
+
 
 func doCreateOwner(owner api.Owner) (resp api.Response, err error) {
 	id := owner.Id
@@ -149,6 +176,78 @@ func doCreateMarble(marble api.Marble) (resp api.Response, err error) {
 	return
 }
 
+func change(w http.ResponseWriter, r *http.Request) {
+	payload, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		writeErrorResponse(w, http.StatusBadRequest, "failed to read request body: %s", err)
+		return
+	}
+    type Typecheck struct{
+		Type string `json:"type"`
+	}
+	var typec Typecheck
+	if err := json.Unmarshal(payload, &typec); err != nil {
+		writeErrorResponse(w, http.StatusBadRequest, "failed to parse payload json: %s", err)
+		return
+	}
+	var owner interface{}
+	switch typec.Type{
+		case "expert" : owner = &api.Export{}
+		case "institution" : owner = &api.Institution{}
+		case "city" : owner = &api.City{}
+		case "damend" : owner = &api.Demand{}
+		case "scheme" : owner = &api.Scheme{}
+		case "patent" : owner = &api.Patent{}
+		case "paper"  : owner = &api.Paper{}
+		
+	}
+
+	if err := json.Unmarshal(payload, &owner); err != nil {
+		writeErrorResponse(w, http.StatusBadRequest, "failed to parse payload json: %s", err)
+		return
+	}
+
+	response, err := dochange(owner, typec.Type)
+	if err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	writeJSONResponse(w, http.StatusOK, response)
+}
+func dochange(marble interface{} , Type string) (resp api.Response, err error) {
+	id := marble.Id
+	if id == "" {
+		id, err = utils.GenerateRandomAlphaNumericString(31)
+		if err != nil {
+			err = fmt.Errorf("failed to generate random string for id: %s", err)
+			return
+		}
+		if Type == "patent" id = "P" +id;
+		else  id = string(Type[0]) + id;
+	}
+	
+	args := []string{
+		"change",
+		id,
+	}
+	rVal := reflect.ValueOf(marble).Elem()
+	for  i := 1 ;i< rVal.NumField(); i++{
+		args = append(args, rVal.Field(i).String())
+	}
+
+
+	data, ccErr := fc.InvokeCC(ConsortiumChannelID, MarblesCC, args, nil)
+	if ccErr != nil {
+		err = fmt.Errorf("cc invoke failed: %s: %v", err, args)
+		return
+	}
+
+	resp = api.Response{
+		Id:   id,
+		TxId: data.FabricTxnID,
+	}
+	return
+}
 // deleteMarbleNoAuth force deletes a marble without checking auth company
 //
 func deleteMarbleNoAuth(w http.ResponseWriter, r *http.Request) {
@@ -208,7 +307,6 @@ func transfer(w http.ResponseWriter, r *http.Request) {
 		"set_owner",
 		transfer.MarbleId,
 		transfer.ToOwnerId,
-		transfer.AuthCompany,
 	}
 
 	data, err := fc.InvokeCC(ConsortiumChannelID, MarblesCC, args, nil)
@@ -332,4 +430,37 @@ func doGetMarble(id string) (*api.Marble, error) {
 		return nil, nil
 	}
 	return &marble, nil
+}
+func delete(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	if id == "" {
+		writeErrorResponse(w, http.StatusBadRequest, "id not provided")
+		return
+	}
+
+	response, err := dodelete(id)
+	if err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	writeJSONResponse(w, http.StatusOK, response)
+}
+func dodelete(id string) (resp api.Response, err error) {
+	args := []string{
+		"delete_marble",
+		id,
+	}
+
+	data, ccErr := fc.InvokeCC(ConsortiumChannelID, MarblesCC, args, nil)
+	if ccErr != nil {
+		err = fmt.Errorf("cc invoke failed: %s: %v", err, args)
+		return
+	}
+
+	resp = api.Response{
+		Id:   id,
+		TxId: data.FabricTxnID,
+	}
+	return
 }

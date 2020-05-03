@@ -1,22 +1,3 @@
-/*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
-
 package main
 
 import (
@@ -59,7 +40,112 @@ type OwnerRelation struct {
 	Username string `json:"username"` //this is mostly cosmetic/handy, the real relation is by Id not Username
 	Company  string `json:"company"`  //this is mostly cosmetic/handy, the real relation is by Id not Company
 }
+type Expert struct { //专家
+	ObjectType     string        `json:"docType"`
+	Id    			string 		`json:"id"`
+	ExpertID    	string   	`json:"expertid"`  
+	ExpertName 		string  	`json:"expername"` 
+	Introduction 	string   	`json:"introduction"`
+	Affiliation  	string   	`json:"affiliation"`
+	E-mail   		string		`json:"e-mail"`
+	Telephone 		string 		`json:"telephone"`
+	Fax				string 		`json:"fax"` 
+	Pwd				string		`json:"pwd"` 
+}
+type Institution struct{//单位
+	ObjectType     string        `json:"docType"`
+	Id	            string 		`json:"id"`
+	InstitutionID	string		`json:"institutionid"`
+	InstitutionName	string		`json:"institutionname"`
+	Introduction	string		`json:"introdution"`
+	Address			string		`json:"address"`
+	E-mail   		string		`json:"e-mail"`
+	Telephone 		string 		`json:"telephone"`
+	Fax				string 		`json:"fax"` 
+	Pwd				string		`json:"pwd"` 
 
+}
+type City  struct{//城市
+	ObjectType     string        `json:"docType"`
+	Id				string		`json:"id"`
+	CityID			string		`json:"cityid"`
+	CityName		string		`json:"cityname"`
+	CityLevel		string		`json:"citylevel"`
+	NetworkLink		string		`json:"networklink"`
+	E-mail   		string		`json:"e-mail"`
+	Telephone 		string 		`json:"telephone"`
+	Fax				string 		`json:"fax"` 
+	Pwd				string		`json:"pwd"` 
+}
+type Demand struct{//项目需求
+	ObjectType     string        `json:"docType"`
+	Id				string		`json:"id"`
+	OwnerId			string		`json:"ownerid"`
+	DemandID		string		`json:"demandid"`
+	KeyWord			string		`json:"keyword"`
+	Budget			string		`json:"budget"`
+	AnnouncementTime	string	`json:"announcementtime"`
+	TenderTime		string		`json:"tendertime"`
+	BidOpeningTime	string		`json:"bidopeningtime"`
+	OpeningAddress	string		`json:"openingaddress"`
+	ProjectContact	string		`json:"projectcontact"`
+	ProjectPhone	string		`json:"projectphone"`
+	PurchasingUnit	string		`json:"purchasingunit"`
+	PurchasingUnitAdd	string		`json:"purchasingunitadd"`
+	PurchasingUnitPhone	string		`json:"purchasingunitphone"`
+	Agency			string		`json:"agency"`
+	AgencyAdd		string		`json:"agencyadd"`
+	AgencyPhone		string		`json:"agencyphone"`
+	Resources		string		`json:"resources"`
+	Description		string		`json:"description"`
+	File			string		`json:"file"`
+	Note			string		`json:"note"`
+}
+type Scheme	struct{//解决方案
+	ObjectType     string        `json:"docType"`
+	Id				string		`json:"id"`
+	OwnerId			string		`json:"ownerid"`
+	SchemeID		string		`json:"schemeid"`
+	SchemeTitle		string		`json:"schemetitle"`
+	KeyWord			string		`json:"keyword"`
+	Period			string		`json:"period"`
+	Supplier		string		`json:"supplier"`
+	Budget			string		`json:"budget"`	
+	ProjectContact	string		`json:"projectcontact"`
+	ProjectPhone	string		`json:"projectphone"`
+	Resources		string		`json:"resources"`
+	Description		string		`json:"description"`
+	File			string		`json:"file"`
+	Note			string		`json:"note"`
+
+}
+type Patent struct{//专利
+	ObjectType     string        `json:"docType"`
+	Id				string		`json:"id"`
+	OwnerId			string		`json:"ownerid"`
+	PatentID		string		`json:"patentid"`
+	PatentNumber	string		`json:"patentnumber"`
+	PType			string		`json:"ptype"`
+	PName 			string		`json:"pname"`
+	PDate			string		`json:"pdate"`
+	POpen 			string		`json:"popen"`
+	POpenDate		string		`json:"popendate"`
+	PState 			string		`json:"pstate"`
+	ApplyID			string		`json:"applyid"`
+	DomainID		string		`json:"domainid"`
+}
+type Paper struct{//论文
+	ObjectType     string        `json:"docType"`
+	Id				string		`json:"id"`
+	OwnerId			string		`json:"ownerid"`
+	PaperID			string		`json:"paperid"`
+	PaperTitle		string		`json:"papertitle"`
+	PAbstract		string		`json:"padstract"`
+	PKeyword		string		`json:"pkeyword"`
+	PDate			string		`json:"pdate"`
+	PFile			string		`json:"pfile"`
+	DomainID		string		`json:"domainid"`
+}
 // ============================================================================================================================
 // Main
 // ============================================================================================================================
@@ -172,6 +258,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return clear_marbles(stub, args)
 	} else if function == "delete_marble_noauth" { //delete a marble without checking auth company
 		return delete_marble_noauth(stub, args)
+	} else if function == "change" {
+		return change(stub, args)
 	}
 
 	// error out

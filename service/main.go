@@ -1,7 +1,3 @@
-/*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
-SPDX-License-Identifier: Apache-2.0
-*/
 
 package main
 
@@ -63,6 +59,15 @@ func main() {
 	r.HandleFunc("/owner/{id}", getOwner).Methods(http.MethodGet)
 	r.HandleFunc("/transfer", transfer).Methods(http.MethodPost)
 	r.HandleFunc("/clear_marbles", clearMarbles).Methods(http.MethodPost)
+	r.HandleFunc("/change",change).Methods(http.MethodPost)
+	r.HandleFunc("/delete/{id}",delete).Methods(http.MethodGet)
+	r.HandleFunc("/expert/{id}", getExpert).Methods(http.MethodGet)
+	r.HandleFunc("/institution/{id}", getInstitution).Methods(http.MethodGet)
+	r.HandleFunc("/city/{id}", getCity).Methods(http.MethodGet)
+	r.HandleFunc("/demand/{id}", getDemand.Methods(http.MethodGet)
+	r.HandleFunc("/scheme/{id}", getScheme).Methods(http.MethodGet)
+	r.HandleFunc("/patent/{id}", getPatent).Methods(http.MethodGet)
+	r.HandleFunc("/paper/{id}", getPaper).Methods(http.MethodGet)
 
 	// batch (random) transfers
 	r.HandleFunc("/batch_run", initBatchTransfers).Methods(http.MethodPost)
