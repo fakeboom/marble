@@ -208,7 +208,7 @@ func change(w http.ResponseWriter, r *http.Request) {
 		case "expert" : owner = &api.Expert{}
 		case "institution" : owner = &api.Institution{}
 		case "city" : owner = &api.City{}
-		case "damend" : owner = &api.Demand{}
+		case "demand" : owner = &api.Demand{}
 		case "scheme" : owner = &api.Scheme{}
 		case "patent" : owner = &api.Patent{}
 		case "paper"  : owner = &api.Paper{}
@@ -228,7 +228,7 @@ func change(w http.ResponseWriter, r *http.Request) {
 	writeJSONResponse(w, http.StatusOK, response)
 }
 func dochange(marble interface{} , Type string, Id string) (resp api.Response, err error) {
-	fmt.Println("here4")
+	fmt.Println("here4"+Type)
 	id := Id
 	if id == "" {
 		id, err = utils.GenerateRandomAlphaNumericString(31)
@@ -236,12 +236,12 @@ func dochange(marble interface{} , Type string, Id string) (resp api.Response, e
 			err = fmt.Errorf("failed to generate random string for id: %s", err)
 			return
 		}
-		if Type == "patent" {id = "P" +id;
-		}else { 
-			id = string(Type[0]) + id;
-		}
 	}
-	
+	if Type == "patent" {id = "P" +id;
+	}else { 
+		id = string(Type[0]) + id;
+	}
+	fmt.Println("here5"+id)
 	args := []string{
 		"change",
 		id,
@@ -481,6 +481,17 @@ func dodelete(id string) (resp api.Response, err error) {
 	return
 }
 func read_everything(w http.ResponseWriter, r *http.Request){
+	type Everything struct {
+		Owners  		[]api.Owner  		`json:"owners"`
+		Marbles 		[]api.Marble 		`json:"marbles"`
+		Experts			[]api.Expert 		`json:"experts"`
+		Institutions 	[]api.Institution	`json:"institutions"`
+		Citys			[]api.City			`json:"citys"`
+		Demands			[]api.Demand		`json:"demands"`
+		Schemes			[]api.Scheme		`json:"schemes"`
+		Patents			[]api.Patent		`json:"patents"`
+		Papers			[]api.Paper			`json:"papers"`
+	}
 	args := []string{
 		"read_everything",
 	}
@@ -490,6 +501,11 @@ func read_everything(w http.ResponseWriter, r *http.Request){
 		fmt.Errorf("cc invoke failed: %s: %v", ccErr, args)
 		return
 	}
-
-	writeJSONResponse(w, http.StatusOK, string([]byte(data.Payload)))
+	var er Everything
+	err := json.Unmarshal(data.Payload,&er)
+	if err != nil {
+		fmt.Errorf("Unmarshal error in everything", err)
+		return
+	}
+	writeJSONResponse(w, http.StatusOK, er)
 }
