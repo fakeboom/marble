@@ -180,6 +180,7 @@ func doCreateMarble(marble api.Marble) (resp api.Response, err error) {
 }
 
 func change(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("here1")
 	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		writeErrorResponse(w, http.StatusBadRequest, "failed to read request body: %s", err)
@@ -190,7 +191,7 @@ func change(w http.ResponseWriter, r *http.Request) {
 	}
 	var typec Typecheck
 	if err := json.Unmarshal(payload, &typec); err != nil {
-		writeErrorResponse(w, http.StatusBadRequest, "failed to parse payload json: %s", err)
+		writeErrorResponse(w, http.StatusBadRequest, "failed to parse payload json2: %s", err)
 		return
 	}
 	type Idcheck struct{
@@ -198,9 +199,10 @@ func change(w http.ResponseWriter, r *http.Request) {
 	}
 	var  idcheck Idcheck
 	if err := json.Unmarshal(payload, &idcheck); err != nil {
-		writeErrorResponse(w, http.StatusBadRequest, "failed to parse payload json: %s", err)
+		writeErrorResponse(w, http.StatusBadRequest, "failed to parse payload json0: %s", err)
 		return
 	}
+	fmt.Println("here2")
 	var owner interface{}
 	switch typec.Type{
 		case "expert" : owner = &api.Expert{}
@@ -214,10 +216,10 @@ func change(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.Unmarshal(payload, owner); err != nil {
-		writeErrorResponse(w, http.StatusBadRequest, "failed to parse payload json: %s", err)
+		writeErrorResponse(w, http.StatusBadRequest, "failed to parse payload json1: %s", err)
 		return
 	}
-
+	fmt.Println("here3")
 	response, err := dochange(owner, typec.Type, idcheck.Id)
 	if err != nil {
 		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
@@ -226,6 +228,7 @@ func change(w http.ResponseWriter, r *http.Request) {
 	writeJSONResponse(w, http.StatusOK, response)
 }
 func dochange(marble interface{} , Type string, Id string) (resp api.Response, err error) {
+	fmt.Println("here4")
 	id := Id
 	if id == "" {
 		id, err = utils.GenerateRandomAlphaNumericString(31)
