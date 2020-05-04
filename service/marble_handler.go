@@ -34,7 +34,7 @@ func getMarble(w http.ResponseWriter, r *http.Request) {
 }
 
 func getExpert(w http.ResponseWriter, r *http.Request) {
-	var expert api.Export
+	var expert api.Expert
 	getEntity(w, r, &expert)
 }
 func getInstitution(w http.ResponseWriter, r *http.Request) {
@@ -48,13 +48,16 @@ func getCity(w http.ResponseWriter, r *http.Request) {
 func getDemand(w http.ResponseWriter, r *http.Request) {
 	var demand api.Demand
 	getEntity(w, r, &demand)
-}func getScheme(w http.ResponseWriter, r *http.Request) {
+}
+func getScheme(w http.ResponseWriter, r *http.Request) {
 	var scheme api.Scheme
 	getEntity(w, r, &scheme)
-}func getPatent(w http.ResponseWriter, r *http.Request) {
+}
+func getPatent(w http.ResponseWriter, r *http.Request) {
 	var patent api.Patent
 	getEntity(w, r, &patent)
-}func getPaper(w http.ResponseWriter, r *http.Request) {
+}
+func getPaper(w http.ResponseWriter, r *http.Request) {
 	var paper api.Paper
 	getEntity(w, r, &paper)
 }
@@ -190,9 +193,17 @@ func change(w http.ResponseWriter, r *http.Request) {
 		writeErrorResponse(w, http.StatusBadRequest, "failed to parse payload json: %s", err)
 		return
 	}
+	type Idcheck struct{
+		Id string `json:"id"`
+	}
+	var  idcheck Idcheck
+	if err := json.Unmarshal(payload, &idcheck); err != nil {
+		writeErrorResponse(w, http.StatusBadRequest, "failed to parse payload json: %s", err)
+		return
+	}
 	var owner interface{}
 	switch typec.Type{
-		case "expert" : owner = &api.Export{}
+		case "expert" : owner = &api.Expert{}
 		case "institution" : owner = &api.Institution{}
 		case "city" : owner = &api.City{}
 		case "damend" : owner = &api.Demand{}
@@ -202,28 +213,30 @@ func change(w http.ResponseWriter, r *http.Request) {
 		
 	}
 
-	if err := json.Unmarshal(payload, &owner); err != nil {
+	if err := json.Unmarshal(payload, owner); err != nil {
 		writeErrorResponse(w, http.StatusBadRequest, "failed to parse payload json: %s", err)
 		return
 	}
 
-	response, err := dochange(owner, typec.Type)
+	response, err := dochange(owner, typec.Type, idcheck.Id)
 	if err != nil {
 		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 	writeJSONResponse(w, http.StatusOK, response)
 }
-func dochange(marble interface{} , Type string) (resp api.Response, err error) {
-	id := marble.Id
+func dochange(marble interface{} , Type string, Id string) (resp api.Response, err error) {
+	id := Id
 	if id == "" {
 		id, err = utils.GenerateRandomAlphaNumericString(31)
 		if err != nil {
 			err = fmt.Errorf("failed to generate random string for id: %s", err)
 			return
 		}
-		if Type == "patent" id = "P" +id;
-		else  id = string(Type[0]) + id;
+		if Type == "patent" {id = "P" +id;
+		}else { 
+			id = string(Type[0]) + id;
+		}
 	}
 	
 	args := []string{
@@ -463,4 +476,17 @@ func dodelete(id string) (resp api.Response, err error) {
 		TxId: data.FabricTxnID,
 	}
 	return
+}
+func read_everything(w http.ResponseWriter, r *http.Request){
+	args := []string{
+		"read_everything",
+	}
+
+	data, ccErr := fc.InvokeCC(ConsortiumChannelID, MarblesCC, args, nil)
+	if ccErr != nil {
+		fmt.Errorf("cc invoke failed: %s: %v", ccErr, args)
+		return
+	}
+
+	writeJSONResponse(w, http.StatusOK, string([]byte(data.Payload)))
 }

@@ -154,7 +154,7 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 
 func change(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var err error
-	fmt.Println("starting change"+arg[0])
+	fmt.Println("starting change"+args[0])
 
 
 	//input sanitation
@@ -192,8 +192,7 @@ func change(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 		if i == 0{
 			v:= strtype
 			f.Set(reflect.ValueOf(v))
-		}
-		else {
+		}else {
 			v:= args[i-1]
 			f.Set(reflect.ValueOf(v))
 		}
@@ -285,21 +284,41 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 		return shim.Error("Failed to get marble")
 	}
 
-	var res interface{}
+
 	switch marble_id[0]{
-		case 'm' : res = &Marble{}
-		case 'd' : res = &Demand{}
-		case 's' : res = &Scheme{}
-		case 'P' : res = &Patent{}
-		case 'p' : res = &Paper{}
-		default  :res = &Marble{}
+		case 'm' : res := Marble{}
+				json.Unmarshal(marbleAsBytes, &res) 
+				res.Owner.Id = new_owner_id
+				jsonAsBytes, _ := json.Marshal(res)       
+				err = stub.PutState(args[0], jsonAsBytes) 
+		case 'd' : res := Demand{}
+				json.Unmarshal(marbleAsBytes, &res) 
+				res.OwnerId = new_owner_id
+				jsonAsBytes, _ := json.Marshal(res)       
+				err = stub.PutState(args[0], jsonAsBytes) 
+		case 's' : res := Scheme{}
+			json.Unmarshal(marbleAsBytes, &res) 
+			res.OwnerId = new_owner_id
+			jsonAsBytes, _ := json.Marshal(res)       
+			err = stub.PutState(args[0], jsonAsBytes) 
+		case 'P' : res := Patent{}
+			json.Unmarshal(marbleAsBytes, &res) 
+			res.OwnerId = new_owner_id
+			jsonAsBytes, _ := json.Marshal(res)       
+			err = stub.PutState(args[0], jsonAsBytes) 
+		case 'p' : res := Paper{}
+			json.Unmarshal(marbleAsBytes, &res) 
+			res.OwnerId = new_owner_id
+			jsonAsBytes, _ := json.Marshal(res)       
+			err = stub.PutState(args[0], jsonAsBytes) 
+		default  :res := Marble{}
+			json.Unmarshal(marbleAsBytes, &res) 
+			res.Owner.Id = new_owner_id
+			jsonAsBytes, _ := json.Marshal(res)       
+			err = stub.PutState(args[0], jsonAsBytes) 
 	}
 
-	json.Unmarshal(marbleAsBytes, res) //un stringify it aka JSON.parse()
-
-	res.OwnerId = new_owner_id
-	jsonAsBytes, _ := json.Marshal(res)       //convert to array of bytes
-	err = stub.PutState(args[0], jsonAsBytes) //rewrite the marble with id as key
+	
 	if err != nil {
 		return shim.Error(err.Error())
 	}

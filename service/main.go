@@ -64,10 +64,11 @@ func main() {
 	r.HandleFunc("/expert/{id}", getExpert).Methods(http.MethodGet)
 	r.HandleFunc("/institution/{id}", getInstitution).Methods(http.MethodGet)
 	r.HandleFunc("/city/{id}", getCity).Methods(http.MethodGet)
-	r.HandleFunc("/demand/{id}", getDemand.Methods(http.MethodGet)
+	r.HandleFunc("/demand/{id}", getDemand).Methods(http.MethodGet)
 	r.HandleFunc("/scheme/{id}", getScheme).Methods(http.MethodGet)
 	r.HandleFunc("/patent/{id}", getPatent).Methods(http.MethodGet)
 	r.HandleFunc("/paper/{id}", getPaper).Methods(http.MethodGet)
+	r.HandleFunc("/read_everything",read_everything).Methods(http.MethodGet)
 
 	// batch (random) transfers
 	r.HandleFunc("/batch_run", initBatchTransfers).Methods(http.MethodPost)

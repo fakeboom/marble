@@ -77,11 +77,11 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 		Marbles 		[]Marble 		`json:"marbles"`
 		Experts			[]Expert 		`json:"experts"`
 		Institutions 	[]Institution	`json:"institutions"`
-		Citys			[]Citys			`json:"citys"`
+		Citys			[]City			`json:"citys"`
 		Demands			[]Demand		`json:"demands"`
 		Schemes			[]Scheme		`json:"schemes"`
 		Patents			[]Patent		`json:"patents"`
-		Papers			[]Papers		`json:"papers"`
+		Papers			[]Paper			`json:"papers"`
 	}
 	var everything Everything
 
@@ -132,7 +132,7 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 
 
 	//Experts
-	resultsIterator, err := stub.GetStateByRange("e0", "e9999999999999999999")
+	resultsIterator, err = stub.GetStateByRange("e0", "e9999999999999999999")
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -153,7 +153,7 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("expert array - ", everything.Experts)
 
 	//Citys
-	resultsIterator, err := stub.GetStateByRange("c0", "c9999999999999999999")
+	resultsIterator, err = stub.GetStateByRange("c0", "c9999999999999999999")
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -174,7 +174,7 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("city array - ", everything.Citys)
 
 	//Institutions
-	resultsIterator, err := stub.GetStateByRange("i0", "i9999999999999999999")
+	resultsIterator, err = stub.GetStateByRange("i0", "i9999999999999999999")
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -195,7 +195,7 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("Institutions array - ", everything.Institutions)
 
 		//demand
-	resultsIterator, err := stub.GetStateByRange("d0", "d9999999999999999999")
+	resultsIterator, err = stub.GetStateByRange("d0", "d9999999999999999999")
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -216,7 +216,7 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("demand array - ", everything.Demands)
 
 		//scheme
-	resultsIterator, err := stub.GetStateByRange("s0", "s9999999999999999999")
+	resultsIterator, err = stub.GetStateByRange("s0", "s9999999999999999999")
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -237,7 +237,7 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("Scheme array - ", everything.Schemes)
 
 	//Patent
-	resultsIterator, err := stub.GetStateByRange("P0", "P9999999999999999999")
+	resultsIterator, err = stub.GetStateByRange("P0", "P9999999999999999999")
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -258,7 +258,7 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("Patent array - ", everything.Patents)
 
 		//Paper
-	resultsIterator, err := stub.GetStateByRange("p0", "p9999999999999999999")
+	resultsIterator, err = stub.GetStateByRange("p0", "p9999999999999999999")
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -330,7 +330,7 @@ func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 		tx.TxId = historyData.TxId                 //copy transaction id over
 		json.Unmarshal(historyData.Value, &marble) //un stringify it aka JSON.parse()
 		if historyData.Value == nil {              //marble has been deleted
-			var emptyMarble Marble
+			var emptyMarble Oship
 			tx.Value = emptyMarble //copy nil marble
 		} else {
 			json.Unmarshal(historyData.Value, &marble) //un stringify it aka JSON.parse()

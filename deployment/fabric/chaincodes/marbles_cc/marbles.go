@@ -47,7 +47,7 @@ type Expert struct { //专家
 	ExpertName 		string  	`json:"expername"` 
 	Introduction 	string   	`json:"introduction"`
 	Affiliation  	string   	`json:"affiliation"`
-	E-mail   		string		`json:"e-mail"`
+	Email   		string		`json:"email"`
 	Telephone 		string 		`json:"telephone"`
 	Fax				string 		`json:"fax"` 
 	Pwd				string		`json:"pwd"` 
@@ -59,7 +59,7 @@ type Institution struct{//单位
 	InstitutionName	string		`json:"institutionname"`
 	Introduction	string		`json:"introdution"`
 	Address			string		`json:"address"`
-	E-mail   		string		`json:"e-mail"`
+	Email   		string		`json:"email"`
 	Telephone 		string 		`json:"telephone"`
 	Fax				string 		`json:"fax"` 
 	Pwd				string		`json:"pwd"` 
@@ -72,7 +72,7 @@ type City  struct{//城市
 	CityName		string		`json:"cityname"`
 	CityLevel		string		`json:"citylevel"`
 	NetworkLink		string		`json:"networklink"`
-	E-mail   		string		`json:"e-mail"`
+	Email   		string		`json:"email"`
 	Telephone 		string 		`json:"telephone"`
 	Fax				string 		`json:"fax"` 
 	Pwd				string		`json:"pwd"` 
