@@ -50,29 +50,26 @@ func main() {
 
 	r := mux.NewRouter()
 	// ping
-	r.HandleFunc("/hello", handleHello)
+	r.HandleFunc("/api/hello", handleHello)
 	// CRUD
-	r.HandleFunc("/marble", createMarble).Methods(http.MethodPost)
-	r.HandleFunc("/marble/{id}", getMarble).Methods(http.MethodGet)
-	r.HandleFunc("/marble/{id}", deleteMarbleNoAuth).Methods(http.MethodDelete)
-	r.HandleFunc("/owner", createOwner).Methods(http.MethodPost)
-	r.HandleFunc("/owner/{id}", getOwner).Methods(http.MethodGet)
-	r.HandleFunc("/transfer", transfer).Methods(http.MethodPost)
-	r.HandleFunc("/clear_marbles", clearMarbles).Methods(http.MethodPost)
-	r.HandleFunc("/change",change).Methods(http.MethodPost)
-	r.HandleFunc("/delete/{id}",delete).Methods(http.MethodGet)
-	r.HandleFunc("/expert/{id}", getExpert).Methods(http.MethodGet)
-	r.HandleFunc("/institution/{id}", getInstitution).Methods(http.MethodGet)
-	r.HandleFunc("/city/{id}", getCity).Methods(http.MethodGet)
-	r.HandleFunc("/demand/{id}", getDemand).Methods(http.MethodGet)
-	r.HandleFunc("/scheme/{id}", getScheme).Methods(http.MethodGet)
-	r.HandleFunc("/patent/{id}", getPatent).Methods(http.MethodGet)
-	r.HandleFunc("/paper/{id}", getPaper).Methods(http.MethodGet)
-	r.HandleFunc("/read_everything",read_everything).Methods(http.MethodGet)
+
+	r.HandleFunc("/api/transfer", transfer).Methods(http.MethodPost)
+	r.HandleFunc("/api/clear_marbles", clearMarbles).Methods(http.MethodPost)
+	r.HandleFunc("/api/change",change).Methods(http.MethodPost)
+	r.HandleFunc("/api/delete/{id}",delete).Methods(http.MethodGet)
+	r.HandleFunc("/api/expert/{id}", getExpert).Methods(http.MethodGet)
+	r.HandleFunc("/api/institution/{id}", getInstitution).Methods(http.MethodGet)
+	r.HandleFunc("/api/city/{id}", getCity).Methods(http.MethodGet)
+	r.HandleFunc("/api/demand/{id}", getDemand).Methods(http.MethodGet)
+	r.HandleFunc("/api/scheme/{id}", getScheme).Methods(http.MethodGet)
+	r.HandleFunc("/api/patent/{id}", getPatent).Methods(http.MethodGet)
+	r.HandleFunc("/api/paper/{id}", getPaper).Methods(http.MethodGet)
+	r.HandleFunc("/api/gethistory/{id}", get_history).Methods(http.MethodGet)
+	r.HandleFunc("/api/read_everything",read_everything).Methods(http.MethodGet)
 
 	// batch (random) transfers
-	r.HandleFunc("/batch_run", initBatchTransfers).Methods(http.MethodPost)
-	r.HandleFunc("/batch_run/{id}", fetchBatchResults).Methods(http.MethodGet)
+	r.HandleFunc("/api/batch_run", initBatchTransfers).Methods(http.MethodPost)
+	r.HandleFunc("/api/batch_run/{id}", fetchBatchResults).Methods(http.MethodGet)
 
 	// Seed the random generator so we get different values each time
 	rand.Seed(time.Now().UTC().UnixNano())

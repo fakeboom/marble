@@ -82,6 +82,7 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 		Schemes			[]Scheme		`json:"schemes"`
 		Patents			[]Patent		`json:"patents"`
 		Papers			[]Paper			`json:"papers"`
+		Transfers       []Transfer 		`json:"transfers"`
 	}
 	var everything Everything
 
@@ -130,6 +131,26 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	}
 	fmt.Println("owner array - ", everything.Owners)
 
+	//Transfers
+	resultsIterator, err = stub.GetStateByRange("t0", "t9999999999999999999")
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	for resultsIterator.HasNext() {
+		aKeyValue, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		queryKeyAsStr := aKeyValue.Key
+		queryValAsBytes := aKeyValue.Value
+		fmt.Println("on expert id - ", queryKeyAsStr)
+		var marble Transfer
+		json.Unmarshal(queryValAsBytes, &marble)                //un stringify it aka JSON.parse()
+		everything.Transfers = append(everything.Transfers, marble) //add this marble to the list
+	}
+	fmt.Println("expert array - ", everything.Transfers)
 
 	//Experts
 	resultsIterator, err = stub.GetStateByRange("e0", "e9999999999999999999")

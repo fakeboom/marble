@@ -100,6 +100,7 @@ type Demand struct{//项目需求
 	Description		string		`json:"description"`
 	File			string		`json:"file"`
 	Note			string		`json:"note"`
+	Able			string		`json:"able"`
 }
 type Scheme	struct{//解决方案
 	ObjectType     string        `json:"docType"`
@@ -117,7 +118,7 @@ type Scheme	struct{//解决方案
 	Description		string		`json:"description"`
 	File			string		`json:"file"`
 	Note			string		`json:"note"`
-
+	Able			string		`json:"able"`
 }
 type Patent struct{//专利
 	ObjectType     string        `json:"docType"`
@@ -133,6 +134,7 @@ type Patent struct{//专利
 	PState 			string		`json:"pstate"`
 	ApplyID			string		`json:"applyid"`
 	DomainID		string		`json:"domainid"`
+	Able			string		`json:"able"`
 }
 type Paper struct{//论文
 	ObjectType     string        `json:"docType"`
@@ -145,7 +147,16 @@ type Paper struct{//论文
 	PDate			string		`json:"pdate"`
 	PFile			string		`json:"pfile"`
 	DomainID		string		`json:"domainid"`
+	Able			string		`json:"able"`
 }
+
+type Transfer struct {//交易请求
+	ObjectType     string        `json:"docType"`
+	Id				string		`json:"id"`
+	MarbleId    string `json:"marbleId"`
+	ToOwnerId   string `json:"toOwnerId"`
+}
+
 // ============================================================================================================================
 // Main
 // ============================================================================================================================

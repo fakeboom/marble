@@ -183,6 +183,8 @@ func change(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 			strtype = "patent"
 		case 'p' : res = &Paper{}
 			strtype = "paper"
+		case 't' : res = &Transfer{}
+			strtype =  "transfer"
 		default  :res = &Marble{}
 			strtype = "marble"
 	}

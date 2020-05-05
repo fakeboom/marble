@@ -1,7 +1,3 @@
-/*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
-SPDX-License-Identifier: Apache-2.0
-*/
 
 package api
 
@@ -23,13 +19,13 @@ type Owner struct {
 	Company  string `json:"company"`
 }
 
-// Transfer reprensents an ownership transfer request
-//
+
 type Transfer struct {
+	Id				string		`json:"id"`
 	MarbleId    string `json:"marbleId"`
 	ToOwnerId   string `json:"toOwnerId"`
-	AuthCompany string `json:"authCompany"` // should be fromOwner's company
 }
+
 
 type Expert struct { //专家
 	Id    			string 		`json:"id"`
@@ -87,6 +83,7 @@ type Demand struct{//项目需求
 	Description		string		`json:"description"`
 	File			string		`json:"file"`
 	Note			string		`json:"note"`
+	Able			string		`json:"able"`
 }
 type Scheme	struct{//解决方案
 	Id				string		`json:"id"`
@@ -103,6 +100,7 @@ type Scheme	struct{//解决方案
 	Description		string		`json:"description"`
 	File			string		`json:"file"`
 	Note			string		`json:"note"`
+	Able			string		`json:"able"`
 
 }
 type Patent struct{//专利
@@ -118,6 +116,7 @@ type Patent struct{//专利
 	PState 			string		`json:"pstate"`
 	ApplyID			string		`json:"applyid"`
 	DomainID		string		`json:"domainid"`
+	Able			string		`json:"able"`
 }
 type Paper struct{//论文
 	Id				string		`json:"id"`
@@ -129,6 +128,7 @@ type Paper struct{//论文
 	PDate			string		`json:"pdate"`
 	PFile			string		`json:"pfile"`
 	DomainID		string		`json:"domainid"`
+	Able			string		`json:"able"`
 }
 
 // Response data structure for entity creation or transfer
@@ -167,4 +167,12 @@ type BatchResult struct {
 	AverageTransferSeconds float64          `json:"averageTransferSeconds"`
 	MinTransferSeconds     float64          `json:"minTransferSeconds"`
 	MaxTransferSeconds     float64          `json:"maxTransferSeconds"`
+}
+type Oship struct{
+	Id  string 	`json:"id"`
+	OwnerId string `json:"ownerid"`
+}
+type AuditHistory struct {
+	TxId  string `json:"txId"`
+	Value Oship `json:"value"`
 }
