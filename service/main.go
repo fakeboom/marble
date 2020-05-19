@@ -68,8 +68,8 @@ func main() {
 	r.HandleFunc("/api/read_everything",read_everything).Methods(http.MethodGet)
 
 	// batch (random) transfers
-	r.HandleFunc("/api/batch_run", initBatchTransfers).Methods(http.MethodPost)
-	r.HandleFunc("/api/batch_run/{id}", fetchBatchResults).Methods(http.MethodGet)
+	//r.HandleFunc("/api/batch_run", initBatchTransfers).Methods(http.MethodPost)
+	//r.HandleFunc("/api/batch_run/{id}", fetchBatchResults).Methods(http.MethodGet)
 
 	// Seed the random generator so we get different values each time
 	rand.Seed(time.Now().UTC().UnixNano())

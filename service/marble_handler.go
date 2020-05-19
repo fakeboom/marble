@@ -1,7 +1,4 @@
-/*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
-SPDX-License-Identifier: Apache-2.0
-*/
+
 
 package main
 
@@ -9,13 +6,12 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 	"reflect"
 	"fmt"
 
 	"github.com/gorilla/mux"
 	"github.com/securekey/marbles-perf/api"
-	"github.com/securekey/marbles-perf/fabric-client"
+	//"github.com/securekey/marbles-perf/fabric-client"
 	"github.com/securekey/marbles-perf/utils"
 )
 
