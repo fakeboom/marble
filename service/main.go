@@ -64,8 +64,11 @@ func main() {
 	r.HandleFunc("/api/scheme/{id}", getScheme).Methods(http.MethodGet)
 	r.HandleFunc("/api/patent/{id}", getPatent).Methods(http.MethodGet)
 	r.HandleFunc("/api/paper/{id}", getPaper).Methods(http.MethodGet)
+	r.HandleFunc("/api/transfer/{id}", getTransfer).Methods(http.MethodGet)
 	r.HandleFunc("/api/gethistory/{id}", get_history).Methods(http.MethodGet)
 	r.HandleFunc("/api/read_everything",read_everything).Methods(http.MethodGet)
+	r.HandleFunc("/api/read_allmarble",read_allmarble).Methods(http.MethodGet)
+	r.HandleFunc("/api/sign_in", sign_in).Methods(http.MethodPost)
 
 	// batch (random) transfers
 	//r.HandleFunc("/api/batch_run", initBatchTransfers).Methods(http.MethodPost)

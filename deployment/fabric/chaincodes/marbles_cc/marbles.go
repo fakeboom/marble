@@ -51,6 +51,7 @@ type Expert struct { //专家
 	Telephone 		string 		`json:"telephone"`
 	Fax				string 		`json:"fax"` 
 	Pwd				string		`json:"pwd"` 
+	Able			string		`json:"able"`
 }
 type Institution struct{//单位
 	ObjectType     string        `json:"docType"`
@@ -63,8 +64,9 @@ type Institution struct{//单位
 	Telephone 		string 		`json:"telephone"`
 	Fax				string 		`json:"fax"` 
 	Pwd				string		`json:"pwd"` 
-
+	Able			string		`json:"able"`
 }
+
 type City  struct{//城市
 	ObjectType     string        `json:"docType"`
 	Id				string		`json:"id"`
@@ -75,7 +77,8 @@ type City  struct{//城市
 	Email   		string		`json:"email"`
 	Telephone 		string 		`json:"telephone"`
 	Fax				string 		`json:"fax"` 
-	Pwd				string		`json:"pwd"` 
+	Pwd				string		`json:"pwd"`
+	Able			string		`json:"able"`
 }
 type Demand struct{//项目需求
 	ObjectType     string        `json:"docType"`
@@ -153,8 +156,10 @@ type Paper struct{//论文
 type Transfer struct {//交易请求
 	ObjectType     string        `json:"docType"`
 	Id				string		`json:"id"`
+	OwnerId			string		`json:"ownerid"`
 	MarbleId    string `json:"marbleId"`
 	ToOwnerId   string `json:"toOwnerId"`
+	Able        string  `json:"able"`
 }
 
 // ============================================================================================================================
@@ -271,6 +276,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return delete_marble_noauth(stub, args)
 	} else if function == "change" {
 		return change(stub, args)
+	} else if function == "able" {
+		return able_alkind(stub, args)
 	}
 
 	// error out

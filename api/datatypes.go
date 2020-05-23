@@ -22,8 +22,10 @@ type Owner struct {
 
 type Transfer struct {
 	Id				string		`json:"id"`
+	OwnerId			string		`json:"ownerid"`
 	MarbleId    string `json:"marbleId"`
 	ToOwnerId   string `json:"toOwnerId"`
+	Able			string		`json:"able"`
 }
 
 
@@ -37,6 +39,7 @@ type Expert struct { //专家
 	Telephone 		string 		`json:"telephone"`
 	Fax				string 		`json:"fax"` 
 	Pwd				string		`json:"pwd"` 
+	Able			string		`json:"able"`
 }
 type Institution struct{//单位
 	Id	            string 		`json:"id"`
@@ -48,6 +51,7 @@ type Institution struct{//单位
 	Telephone 		string 		`json:"telephone"`
 	Fax				string 		`json:"fax"` 
 	Pwd				string		`json:"pwd"` 
+	Able			string		`json:"able"`
 
 }
 type City  struct{//城市
@@ -60,6 +64,7 @@ type City  struct{//城市
 	Telephone 		string 		`json:"telephone"`
 	Fax				string 		`json:"fax"` 
 	Pwd				string		`json:"pwd"` 
+	Able			string		`json:"able"`
 }
 type Demand struct{//项目需求
 	Id				string		`json:"id"`

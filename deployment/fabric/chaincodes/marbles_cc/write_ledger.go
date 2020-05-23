@@ -329,6 +329,82 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	return shim.Success(nil)
 }
 
+func able_alkind(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var err error
+	fmt.Println("starting able")
+
+	if len(args) != 1 {
+		return shim.Error("Incorrect number of arguments. Expecting 1")
+	}
+
+	// input sanitation
+	err = sanitize_arguments(args)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	var marble_id = args[0]
+	fmt.Println(marble_id )
+
+	// get marble's current state
+	marbleAsBytes, err := stub.GetState(marble_id)
+	if err != nil {
+		return shim.Error("Failed to get marble")
+	}
+
+
+	switch marble_id[0]{
+		case 'd' : res := Demand{}
+				json.Unmarshal(marbleAsBytes, &res) 
+				res.Able = "true"
+				jsonAsBytes, _ := json.Marshal(res)       
+				err = stub.PutState(args[0], jsonAsBytes) 
+		case 's' : res := Scheme{}
+			json.Unmarshal(marbleAsBytes, &res) 
+			res.Able = "true"
+			jsonAsBytes, _ := json.Marshal(res)       
+			err = stub.PutState(args[0], jsonAsBytes) 
+		case 'P' : res := Patent{}
+			json.Unmarshal(marbleAsBytes, &res) 
+			res.Able = "true"
+			jsonAsBytes, _ := json.Marshal(res)       
+			err = stub.PutState(args[0], jsonAsBytes) 
+		case 'p' : res := Paper{}
+			json.Unmarshal(marbleAsBytes, &res) 
+			res.Able = "true"
+			jsonAsBytes, _ := json.Marshal(res)       
+			err = stub.PutState(args[0], jsonAsBytes) 
+		case  'c' : res := City{}
+			json.Unmarshal(marbleAsBytes, &res) 
+			res.Able = "true"
+			jsonAsBytes, _ := json.Marshal(res)       
+			err = stub.PutState(args[0], jsonAsBytes)
+		case  'i' :  res := Institution{}
+			json.Unmarshal(marbleAsBytes, &res) 
+			res.Able = "true"
+			jsonAsBytes, _ := json.Marshal(res)       
+			err = stub.PutState(args[0], jsonAsBytes)   
+		case   'e' : res := Expert{}
+			json.Unmarshal(marbleAsBytes, &res) 
+			res.Able = "true"
+			jsonAsBytes, _ := json.Marshal(res)       
+			err = stub.PutState(args[0], jsonAsBytes) 
+		case   't' : res := Transfer{}
+			json.Unmarshal(marbleAsBytes, &res) 
+			res.Able = "true"
+			jsonAsBytes, _ := json.Marshal(res)       
+			err = stub.PutState(args[0], jsonAsBytes) 
+	}
+
+	
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	fmt.Println("- end able")
+	return shim.Success(nil)
+}
+
 // ============================================================================================================================
 // Disable Marble Owner
 //

@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"reflect"
 	"fmt"
-
 	"github.com/gorilla/mux"
 	"github.com/securekey/marbles-perf/api"
 	//"github.com/securekey/marbles-perf/fabric-client"
@@ -44,8 +43,57 @@ func getPaper(w http.ResponseWriter, r *http.Request) {
 	var paper api.Paper
 	getEntity(w, r, &paper)
 }
+func getTransfer(w http.ResponseWriter, r *http.Request) {
+	var transfer api.Transfer
+	getEntity(w, r, &transfer)
+}
+//登录
+func sign_in(w http.ResponseWriter, r *http.Request){
+	type Sign struct{
+		Id  string `json:"id"`
+		Pwd string `json:"pwd"`
+	}
+	payload, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		writeErrorResponse(w, http.StatusBadRequest, "failed to read request body: %s", err)
+		return
+	}
+	var sign Sign
+	var res  Sign
+	if err := json.Unmarshal(payload, &sign); err != nil {
+		writeErrorResponse(w, http.StatusBadRequest, "failed to parse payload json2: %s", err)
+		return
+	}
+	args := []string{
+		"read",
+		sign.Id,
+	}
 
+	data, err := fc.QueryCC(0, ConsortiumChannelID, MarblesCC, args, nil)
+	if err != nil {
+		writeErrorResponse(w, http.StatusBadRequest, "cc invoke failed: %s", err)
+	}
 
+	payloadJSON := data.Payload
+
+	if len(payloadJSON) > 0 {
+		if err := json.Unmarshal([]byte(payloadJSON), &res); err != nil {
+			fmt.Errorf("failed to unmarshal cc response payload: %s: %s", err, payloadJSON)
+			writeErrorResponse(w, http.StatusBadRequest, "failed to unmarshal cc response payload: %s", err)
+		}
+	}else{
+		writeErrorResponse(w, http.StatusBadRequest, "user do not exist", nil)
+	}
+	resp := api.Response{
+		Id:   sign.Id,
+		TxId: data.FabricTxnID,
+	}
+	if(res.Pwd==sign.Pwd){
+		writeJSONResponse(w, http.StatusOK, resp)
+	}else {
+		writeErrorResponse(w, http.StatusBadRequest, "pwd_wrong", nil)
+	}
+}
 
 func change(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("here1")
@@ -293,6 +341,7 @@ func read_everything(w http.ResponseWriter, r *http.Request){
 		Schemes			[]api.Scheme		`json:"schemes"`
 		Patents			[]api.Patent		`json:"patents"`
 		Papers			[]api.Paper			`json:"papers"`
+		Transfers       []api.Transfer      `json:"transfers"`
 	}
 	args := []string{
 		"read_everything",
@@ -333,6 +382,68 @@ func get_history(w http.ResponseWriter, r *http.Request){
 	if err != nil {
 		fmt.Errorf("Unmarshal error in everything", err)
 		return
+	}
+	writeJSONResponse(w, http.StatusOK, er)
+}
+func read_allmarble(w http.ResponseWriter, r *http.Request){
+	vars := mux.Vars(r)
+	id := vars["id"]
+	if id == "" {
+		writeErrorResponse(w, http.StatusBadRequest, "id not provided")
+		return
+	}
+	type Everything struct {
+		Demands			[]api.Demand		`json:"demands"`
+		Schemes			[]api.Scheme		`json:"schemes"`
+		Patents			[]api.Patent		`json:"patents"`
+		Papers			[]api.Paper			`json:"papers"`
+		Transfers       []api.Transfer      `json:"transfers"`
+	}
+	type ReEverything struct {
+		Demands			[]api.Demand		`json:"demands"`
+		Schemes			[]api.Scheme		`json:"schemes"`
+		Patents			[]api.Patent		`json:"patents"`
+		Papers			[]api.Paper			`json:"papers"`
+		Transfers       []api.Transfer      `json:"transfers"`
+		ToTransfers       []api.Transfer      `json:"totransfers"`
+	}
+	args := []string{
+		"read_everything",
+	}
+
+	data, ccErr := fc.InvokeCC(ConsortiumChannelID, MarblesCC, args, nil)
+	if ccErr != nil {
+		fmt.Errorf("cc invoke failed: %s: %v", ccErr, args)
+		return
+	}
+	var er Everything
+	err := json.Unmarshal(data.Payload,&er)
+	if err != nil {
+		fmt.Errorf("Unmarshal error in everything", err)
+		return
+	}
+	var res ReEverything
+	for _,value := range er.Demands{
+		if(value.OwnerId == id){
+			res.Demands = append(res.Demands,value);
+		}
+	}
+	for _,value := range er.Schemes{
+		if(value.OwnerId == id){
+			res.Schemes = append(res.Schemes,value);
+		}
+	}
+	for _,value := range er.Patents{
+		if(value.OwnerId == id){
+			res.Patents = append(res.Patents,value);
+		}
+	}
+	for _,value := range er.Transfers{
+		if(value.OwnerId == id){
+			res.Transfers = append(res.Transfers,value);
+		}else if(value.ToOwnerId == id){
+			res.ToTransfers = append(res.ToTransfers,value)
+		}
 	}
 	writeJSONResponse(w, http.StatusOK, er)
 }
